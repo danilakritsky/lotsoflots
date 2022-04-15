@@ -27,10 +27,13 @@ class LotSpider(scrapy.Spider):
 
         self.logger.info(f"Found current auction urls: {current_auctions_urls}")
         for url in current_auctions_urls:
-            yield response.follow(url=url, callback=self.parse_auction_page)
+            loader = ItemLoader(item=LotItem(), selector=response)
+            loader.add_value("auction_num", url.split("/")[-1])
+            yield response.follow(
+                url=url, callback=self.parse_auction_page, meta={"loader": loader}
+            )
 
     def parse_auction_page(self, response: Response) -> typing.Union[Request, LotItem]:
         """Parse auction page to get info on lots."""
-        loader = ItemLoader(item=LotItem(), selector=response)
-        loader.add_css("auction", ".subtop-desc h1::text")
+        loader = response.meta['loader']
         yield loader.load_item()

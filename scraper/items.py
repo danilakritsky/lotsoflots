@@ -6,4 +6,4 @@ from scrapy import Field
 
 
 class LotItem(scrapy.Item):
-    auction = Field()
+    auction_num = Field(output_processor=TakeFirst())
