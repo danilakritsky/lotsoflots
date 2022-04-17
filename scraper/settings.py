@@ -34,7 +34,7 @@ ROBOTSTXT_OBEY = True
 # COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
-# TELNETCONSOLE_ENABLED = False
+TELNETCONSOLE_ENABLED = False
 
 # Override the default request headers:
 # DEFAULT_REQUEST_HEADERS = {
@@ -92,9 +92,13 @@ DOWNLOADER_MIDDLEWARES = {
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 # Splash settings
-SPLASH_URL = "http://localhost:8050"  # scheme must be set
-# DUPEFILTER_CLASS = "scrapy_splash.SplashAwareDupeFilter"
+SPLASH_URL = "http://localhost:8050"  # https:// scheme must be set explicitly
 DUPEFILTER_CLASS = (
-    "scrapy.dupefilters.BaseDupeFilter"  # disable filtering duplicate requests
+    # don't filter out requests to the same page
+    # "scrapy_splash.SplashAwareDupeFilter",
+    "scrapy.dupefilters.BaseDupeFilter"
 )
 HTTPCACHE_STORAGE = "scrapy_splash.SplashAwareFSCacheStorage"
+
+# Misc settings
+SPLASH_PAGE_LOAD_WAIT_TIME = 5

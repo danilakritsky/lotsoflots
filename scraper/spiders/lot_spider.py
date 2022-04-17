@@ -1,27 +1,32 @@
 """The module container the spider that does the scraping of auction lots."""
+import time
 import typing
-from fileinput import filename
 
 import scrapy
 from scrapy.http import Request, Response
 from scrapy.loader import ItemLoader
+from scrapy.utils.project import get_project_settings
 from scrapy_splash import SplashRequest
 
 from scraper.items import LotItem
 
-LUA = """
-    -- Lua function to press next page button
+SETTINGS = get_project_settings()
+PAGE_LOAD_WAIT_TIME = SETTINGS.get("SPLASH_PAGE_LOAD_WAIT_TIME", 5)
+
+LUA_GO_TO_PAGE = """
+    -- Lua function that calls jQuery func to go to another page
     function main(splash, args)
-        -- assert(splash:go(args.url))
-        local previous_response = args.previous_response
-        assert(splash:set_content(previous_response, "text/html; charset=utf-8", args.url))
-        assert(splash:runjs('document.querySelector(".paginate_button.active + li").querySelector("a").click()'))
-        assert(splash:wait(2))
-        return {
+        assert(splash:go(args.url))
+        -- wait for the page to load JS
+        assert(splash:wait({page_load_wait_time}))
+        assert(splash:runjs('$.paginationUtils.goPage({page_num})'))
+        -- set page load time
+        assert(splash:wait({page_load_wait_time}))
+        return {{
             html = splash:html(),
             png = splash:png(),
             har = splash:har(),
-        }
+        }}
     end
 """
 
@@ -37,28 +42,30 @@ class LotSpider(scrapy.Spider):
     def parse(self, response: Response) -> SplashRequest:
         """Find the current auction links on the landing page and start scraping."""
 
-        current_auctions_urls = set(
-            response.css("[href]::attr(href)").re(
-                # "/Auction/(?:Major|Weekly|Premium)/\d+"
-                "/Auction/(?:Major)/\d+"
+        try:
+            if self.auction_urls:
+                urls = self.auction_urls.split(",")
+        except AttributeError:
+            # current auctions urls
+            urls = set(
+                response.css("[href]::attr(href)").re(
+                    "/Auction/(?:Major|Weekly|Premium)/\d+"
+                )
             )
-        )
 
-        self.logger.info(f"Found current auction urls: {current_auctions_urls}")
-        for url in current_auctions_urls:
+        self.logger.info(f"URLs that will be crawled: {urls}.")
+        for url in urls:
+            time.sleep(2)  # disable simultaneous request dispatch
             *_, auction, auction_num = url.split("/")
             yield SplashRequest(
                 url=response.urljoin(url),
-                args={"wait": 2},
+                args={"wait": PAGE_LOAD_WAIT_TIME},
                 callback=self.parse_auction_page,
                 meta={"auction": auction, "auction_num": auction_num},
             )
 
     def parse_auction_page(self, response: Response) -> typing.Union[Request, LotItem]:
         """Parse auction page to get info on lots."""
-
-        active_page = response.css(".paginate_button.active a::text").get()
-        next_page_disabled = response.css(".next.disabled").get()
 
         lots = response.css(".card.artwork")
         for lot in lots:
@@ -79,22 +86,21 @@ class LotSpider(scrapy.Spider):
                 loader.add_css("lot_image_url", "[src]::attr(src)")
                 yield loader.load_item()
 
-        if not next_page_disabled:
+        active_page_num = response.css(".paginate_button.active a::text").get()
+        next_page_button_link = response.css(
+            ".paginate_button.active + li a[href]"
+        ).get()
+        self.logger.info(f"THE ACTIVE PAGE NUM IS {active_page_num}")
+        if next_page_button_link:
             yield SplashRequest(
                 response.url,
                 self.parse_auction_page,
                 endpoint="execute",
                 args={
-                    "wait": 2,
-                    "lua_source": LUA,
-                    # NOTE: setting previous_response in splash:set_content does not work
-                    # possible reason: page depends on external JS, which is not included with the passed content
-                    "previous_response": response.text,
+                    "lua_source": LUA_GO_TO_PAGE.format(
+                        page_load_wait_time=PAGE_LOAD_WAIT_TIME,
+                        page_num=(int(active_page_num) + 1),
+                    ),
                 },
                 meta={"auction": auction, "auction_num": auction_num},
             )
-
-    def save_result(self, text, filename="lots_scraped.html") -> None:
-        with open(filename, "w+") as f:
-            f.write(text)
-        print(f"Data saved to {filename}.")
