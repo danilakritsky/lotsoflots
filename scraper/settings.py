@@ -94,5 +94,7 @@ DOWNLOADER_MIDDLEWARES = {
 # Splash settings
 SPLASH_URL = "http://localhost:8050"  # scheme must be set
 # DUPEFILTER_CLASS = "scrapy_splash.SplashAwareDupeFilter"
-DUPEFILTER_CLASS = 'scrapy.dupefilters.BaseDupeFilter'  # disable filtering duplicate requests
+DUPEFILTER_CLASS = (
+    "scrapy.dupefilters.BaseDupeFilter"  # disable filtering duplicate requests
+)
 HTTPCACHE_STORAGE = "scrapy_splash.SplashAwareFSCacheStorage"
