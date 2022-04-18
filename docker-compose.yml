@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    environment:
+      - POSTGRES_DB=lotsoflots
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+      - ./postgresdata:/var/lib/postgresql/data
