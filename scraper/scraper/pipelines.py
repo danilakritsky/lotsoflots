@@ -15,19 +15,21 @@ class PostgresPipeline:
         create_lot_table(engine)
         self.session = sessionmaker(bind=engine)
 
-    def process_item(self, item, _):
+    def process_item(self, item, spider):
         """Process and save the item to the database."""
         session = self.session()
         lot_exists = session.query(Lot).filter_by(**item)
         # drop item if exists
         if lot_exists.first():
-            raise DropItem(f"Duplicate item ignored:\n{item}.")
+            session.close()
+            raise DropItem(f"Duplicate items ignored:\n")
         else:
             lot = Lot(**item)
-
+            spider.logger.info('Saving item.')
             try:
                 session.add(lot)
                 session.commit()
+                spider.logger.info('Item saved.\n\n')
             except:
                 session.rollback()
                 raise
