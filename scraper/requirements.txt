@@ -1,6 +1,5 @@
 attrs==21.4.0
 Automat==20.2.0
-black==22.3.0
 certifi==2021.10.8
 cffi==1.15.0
 charset-normalizer==2.0.12
@@ -9,10 +8,10 @@ constantly==15.1.0
 cryptography==36.0.2
 cssselect==1.1.0
 filelock==3.6.0
+greenlet==1.1.2
 hyperlink==21.0.0
 idna==3.3
 incremental==21.3.0
-isort==5.10.1
 itemadapter==0.5.0
 itemloaders==1.0.4
 jmespath==1.0.0
@@ -22,6 +21,7 @@ parsel==1.6.0
 pathspec==0.9.0
 platformdirs==2.5.1
 Protego==0.2.1
+psycopg2-binary==2.9.3
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycparser==2.21
@@ -31,8 +31,10 @@ queuelib==1.6.2
 requests==2.27.1
 requests-file==1.5.1
 Scrapy==2.6.1
+scrapy-splash==0.8.0
 service-identity==21.1.0
 six==1.16.0
+SQLAlchemy==1.4.35
 tldextract==3.2.1
 tomli==2.0.1
 Twisted==22.4.0

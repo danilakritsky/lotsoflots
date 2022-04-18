@@ -94,7 +94,7 @@ ITEM_PIPELINES = {
 
 # Splash settings
 SPLASH_URL = (
-    os.getenv("SPLASH_HOST") or "http://localhost:8050"
+    os.getenv("SPLASH_URL") or "http://localhost:8050"
 )  # https:// scheme must be set explicitly
 DUPEFILTER_CLASS = (
     # don't filter out requests to the same page

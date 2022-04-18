@@ -1,7 +1,7 @@
 """This module contains database model and utility functions."""
 
 from scrapy.utils.project import get_project_settings
-from sqlalchemy import Column, Float, Integer, String, Table, create_engine
+from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.engine.base import Engine
 from sqlalchemy.engine.url import URL
 from sqlalchemy.ext.declarative import declarative_base

@@ -11,6 +11,8 @@ def take_first(list_of_str: list[str]) -> str:
 
 
 class LotItem(scrapy.Item):
+    """Item representing an auction lot."""
+
     auction = Field(output_processor=TakeFirst())
     auction_num = Field(
         input_processor=Compose(take_first, int), output_processor=TakeFirst()

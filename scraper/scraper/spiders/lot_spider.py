@@ -6,7 +6,7 @@ import scrapy
 from scrapy.http import Request, Response
 from scrapy.loader import ItemLoader
 from scrapy.utils.project import get_project_settings
-from scrapy_splash import SplashRequest
+from scrapy_splash import SplashRequest, SplashResponse
 
 from scraper.items import LotItem
 
@@ -32,7 +32,7 @@ LUA_GO_TO_PAGE = """
 
 
 class LotSpider(scrapy.Spider):
-    """Crawl auction pages and collect info on lots."""
+    """Spider that crawls auction pages and collects info on lots."""
 
     name = "lot_spider"
     allowed_domains = ["k-auction.com"]
@@ -64,7 +64,9 @@ class LotSpider(scrapy.Spider):
                 meta={"auction": auction, "auction_num": auction_num},
             )
 
-    def parse_auction_page(self, response: Response) -> typing.Union[Request, LotItem]:
+    def parse_auction_page(
+        self, response: SplashResponse
+    ) -> typing.Union[SplashRequest, LotItem]:
         """Parse auction page to get info on lots."""
 
         lots = response.css(".card.artwork")
@@ -90,8 +92,11 @@ class LotSpider(scrapy.Spider):
         next_page_button_link = response.css(
             ".paginate_button.active + li a[href]"
         ).get()
-        self.logger.info(f"THE ACTIVE PAGE NUM IS {active_page_num}")
         if next_page_button_link:
+            next_page_num = int(active_page_num) + 1
+            self.logger.info(
+                f"\n\nFinished crawling page {active_page_num} - going to the next page...\n"
+            )
             yield SplashRequest(
                 response.url,
                 self.parse_auction_page,
@@ -99,7 +104,7 @@ class LotSpider(scrapy.Spider):
                 args={
                     "lua_source": LUA_GO_TO_PAGE.format(
                         page_load_wait_time=PAGE_LOAD_WAIT_TIME,
-                        page_num=(int(active_page_num) + 1),
+                        page_num=next_page_num,
                     ),
                 },
                 meta={"auction": auction, "auction_num": auction_num},

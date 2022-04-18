@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+
+  scraper:
+    build: scraper/.
+    container_name: scraper    
+    volumes:
+      - ./scraper/:/home/scraper/
+    environment:
+      - SPLASH_URL=http://splash:8050
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DATABASE=lotsoflots
+    depends_on:
+      - postgres
+      - splash
+    tty: true  # persist (should use 'sh' as entrypoint)
+
+
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    environment:
+      - POSTGRES_DB=lotsoflots
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+      - ./postgresdata:/var/lib/postgresql/data
+
+
+
+  splash:
+    image: scrapinghub/splash
+    container_name: splash
+    ports:
+      - 8050:8050
