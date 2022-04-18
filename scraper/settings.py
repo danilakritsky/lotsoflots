@@ -102,3 +102,13 @@ HTTPCACHE_STORAGE = "scrapy_splash.SplashAwareFSCacheStorage"
 
 # Misc settings
 SPLASH_PAGE_LOAD_WAIT_TIME = 5
+
+# PostgreSQL settings
+POSTGRES = {
+    'DRIVERNAME': 'postgres',
+    "HOST": os.getenv("HOST") or "postgres",
+    "PORT": os.getenv("PORT") or "5432",
+    "DB": os.getenv("NAME") or "lotsoflots",
+    "USER": "postgres",
+    "PASSWORD": "123",
+}
