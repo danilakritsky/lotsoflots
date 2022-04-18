@@ -13,3 +13,11 @@ services:
       - 5432:5432
     volumes:
       - ./postgresdata:/var/lib/postgresql/data
+
+
+
+  splash:
+    image: scrapinghub/splash
+    container_name: splash
+    ports:
+      - 8050:8050

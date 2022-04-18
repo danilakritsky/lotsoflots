@@ -22,14 +22,14 @@ class PostgresPipeline:
         # drop item if exists
         if lot_exists.first():
             session.close()
-            raise DropItem(f"Duplicate items ignored:\n")
+            raise DropItem(f"Duplicate item ignored.\n")
         else:
             lot = Lot(**item)
             spider.logger.info('Saving item.')
             try:
                 session.add(lot)
                 session.commit()
-                spider.logger.info('Item saved.\n\n')
+                spider.logger.info('Item saved.\n')
             except:
                 session.rollback()
                 raise
