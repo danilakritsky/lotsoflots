@@ -1,10 +1,9 @@
 """This module defines a pipeline that saves scraped data to a database."""
 
-from scrapy.exceptions import DropItem
-from sqlalchemy.orm import sessionmaker
-
 from scraper.models import Lot, create_lot_table, db_connect
 from scraper.spiders.lot_spider import LotSpider
+from scrapy.exceptions import DropItem
+from sqlalchemy.orm import sessionmaker
 
 from .items import LotItem
 

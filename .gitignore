@@ -163,3 +163,5 @@ cython_debug/
 lots.json
 lots.html
 postgresdata/
+*/lots.json
+*/result.html

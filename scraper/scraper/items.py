@@ -13,18 +13,15 @@ def take_first(list_of_str: list[str]) -> str:
 class LotItem(scrapy.Item):
     """Item representing an auction lot."""
 
-    auction = Field(output_processor=TakeFirst())
-    auction_num = Field(
+    auc_kind = Field(
         input_processor=Compose(take_first, int), output_processor=TakeFirst()
     )
-    lot_num = Field(
-        input_processor=Compose(take_first, lambda x: x.strip("Lot"), int),
-        output_processor=TakeFirst(),
-    )
-    lot_artist = Field(output_processor=TakeFirst())
-    lot_title = Field(output_processor=TakeFirst())
-    lot_dimensions = Field(
-        input_processor=Compose(take_first, lambda x: x.split("|")[0].strip()),
-        output_processor=TakeFirst(),
-    )
-    lot_image_url = Field(output_processor=TakeFirst())
+    auc_num = Field(output_processor=TakeFirst())
+    lot_num = Field(output_processor=TakeFirst())
+    artist_uid = Field(output_processor=TakeFirst())
+    artist_name = Field(output_processor=TakeFirst())
+    title = Field(output_processor=TakeFirst())
+    size = Field(output_processor=TakeFirst())
+    code = Field(output_processor=TakeFirst())
+    img_file_name = Field(output_processor=TakeFirst())
+    img_file_url = Field(output_processor=TakeFirst())

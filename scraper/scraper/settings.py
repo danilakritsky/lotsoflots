@@ -46,16 +46,16 @@ TELNETCONSOLE_ENABLED = False
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 SPIDER_MIDDLEWARES = {
-    "scrapy_splash.SplashDeduplicateArgsMiddleware": 100,
+    # "scrapy_splash.SplashDeduplicateArgsMiddleware": 100,
     # 'scraper.middlewares.ScraperSpiderMiddleware': 543,
 }
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-    "scrapy_splash.SplashCookiesMiddleware": 723,
-    "scrapy_splash.SplashMiddleware": 725,
-    "scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware": 810,
+    # "scrapy_splash.SplashCookiesMiddleware": 723,
+    # "scrapy_splash.SplashMiddleware": 725,
+    # "scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware": 810,
     # 'scraper.middlewares.ScraperDownloaderMiddleware': 543,
 }
 
@@ -68,7 +68,7 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    "scraper.pipelines.PostgresPipeline": 300,
+    # "scraper.pipelines.PostgresPipeline": 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -93,18 +93,18 @@ ITEM_PIPELINES = {
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 # Splash settings
-SPLASH_URL = (
-    os.getenv("SPLASH_URL") or "http://localhost:8050"
-)  # https:// scheme must be set explicitly
-DUPEFILTER_CLASS = (
-    # don't filter out requests to the same page
-    # "scrapy_splash.SplashAwareDupeFilter",
-    "scrapy.dupefilters.BaseDupeFilter"
-)
-HTTPCACHE_STORAGE = "scrapy_splash.SplashAwareFSCacheStorage"
+# SPLASH_URL = (
+#     os.getenv("SPLASH_URL") or "http://localhost:8050"
+# )  # https:// scheme must be set explicitly
+# DUPEFILTER_CLASS = (
+#     # don't filter out requests to the same page
+#     # "scrapy_splash.SplashAwareDupeFilter",
+#     "scrapy.dupefilters.BaseDupeFilter"
+# )
+# HTTPCACHE_STORAGE = "scrapy_splash.SplashAwareFSCacheStorage"
 
-# Misc settings
-SPLASH_PAGE_LOAD_WAIT_TIME = 5
+# # Misc settings
+# SPLASH_PAGE_LOAD_WAIT_TIME = 5
 
 # PostgreSQL settings
 POSTGRES = {
